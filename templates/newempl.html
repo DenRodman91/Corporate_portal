@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title%}
+Создание новости
+{% endblock %}
+
+{% block body%}
+<div class="container">
+<form action="/new_empl" method="post">
+    <label for="fio">ФИО:</label>
+    <input type="text" id="fio" name="ФИО" required><br><br>
+
+    <label for="birthdate">Дата рождения:</label>
+    <input type="text" id="birthdate" name="ДатаРождения" required><br><br>
+
+    <label for="dr">ДР:</label>
+    <input type="text" id="dr" name="ДР" required><br><br>
+
+    <label for="telegram">Телеграм:</label>
+    <input type="text" id="telegram" name="Телеграм" required><br><br>
+
+    <label for="email">Почта:</label>
+    <input type="email" id="email" name="Почта" required><br><br>
+
+    <label for="position">Должность:</label>
+    <input type="text" id="position" name="Должность" required><br><br>
+
+    <label for="department">Отдел:</label>
+    <input type="text" id="department" name="Отдел" required><br><br>
+
+    <label for="phone">Телефон:</label>
+    <input type="tel" id="phone" name="Телефон" required><br><br>
+
+    <label for="photo">Фото (URL):</label>
+    <input type="text" id="photo" name="Фото" required><br><br>
+
+    <label for="facts">Факты:</label>
+    <textarea id="facts" name="Факты" required></textarea><br><br>
+
+    <label for="history">История:</label>
+    <textarea id="history" name="История" required></textarea><br><br>
+
+    <label for="hiredDate">Дата принятия на работу:</label>
+    <input type="text" id="hiredDate" name="ПринятДата" required><br><br>
+
+    <label for="category">Категория:</label>
+    <input type="text" id="category" name="Категория" required><br><br>
+
+    <label for="id">ID:</label>
+    <input type="number" id="id" name="ID" required><br><br>
+
+    <label for="work">Работа:</label>
+    <input type="text" id="work" name="Работа" required><br><br>
+
+    <label for="status">Статус:</label>
+    <input type="text" id="status" name="Статус" required><br><br>
+
+    <input type="submit" value="Отправить">
+</form> 
+</div>
+
+{% endblock %}
