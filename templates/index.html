@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block title%}
+😎Главная страницау😎
+{% endblock %}
+
+
+
+{% block body%}
+<style>
+  /* Стили для текста и кнопки "читать далее" */
+  .read-more-container {
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+  }
+  .read-more-text {
+    max-height: 100px; /* начальная максимальная высота */
+  }
+  .read-more-btn {
+    background-color: #f8f9fa;
+    border: none;
+    color: #007bff;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 10px 0;
+    cursor: pointer;
+  }
+  </style>
+
+<div style="margin: 20px;">
+  <div class="row">
+    <div class="col-12 col-md-6 col-s-12  col-xl-2" style="border-right: 1px solid; border-radius: 10px; min-height: 200px;">
+      <h5>Показатели компании</h5>
+      <br>
+        <div class="row">
+          <div>
+            <h6 style="color: red;">Раздел находиться в разработке</h6>
+            <iframe src="/dashboard2/" frameborder="0" ></iframe>
+          </div>
+        </div>
+        <hr>
+    </div> 
+    <div class="col-12 col-md-6 col-s-12  col-xl-7">
+      <h3>Новости компании</h3>
+      <br>
+      {% for item in df_news['id']%}
+        <div class="row" style="border-bottom: 1px solid; border-radius: 15px; margin-top: 15px; ">
+          <div >
+            <p style="font-size: x-small;"> {{df_news[df_news['id'] == item]['data'].values[0] }}</p>
+            <div class="text-center">
+              <img src="/static/img/{{df_news[df_news['id'] == item]['foto'].values[0]}}" alt="" style="max-height: 500px;max-width: 100%; margin-bottom: 20px;">
+            </div>
+            <div class="read-more-container">
+              <p class="read-more-text">
+                {{df_news[df_news['id'] == item]['text'].values[0]|safe}}
+              </p>
+              <button class="read-more-btn" onclick="toggleReadMore(this)">Читать далее</button>
+            </div>
+            
+          </div>
+        </div>
+      {% endfor %}
+        <hr>
+    </div>  
+
+      <div class="col-12 col-md-12 col-s-12  col-xl-3" >
+        <div class="text-center"><h5>Дни рождения:</h5></div>
+        
+        <div style="border-radius: 20px; padding: 5px;  min-height: 300px; background-color: rgba(46, 46, 255, 0.326); max-width: 400px;;">
+        {% for item in df_dr['ФИО'].unique() %}
+        {% if today ==  df_dr[df_dr['ФИО'] == item]['ДатаРождения']. values[0] %}
+        <a href="{{ url_for('employee', id = df_dr[df_dr['ФИО'] == item]['ID']) }}" style="color: rgb(255, 0, 0); font-size: 30px;">
+          <div class="row">
+              <div class="col-6"><p style="font-size: 17px;">{{ item }}🎆🔥</p></div>
+              <div class="col-4"><p style="font-size: 17px;">{{df_dr[df_dr['ФИО'] == item]['ДР']. values[0]}}</p></div>
+              <!-- <div class="col-2"><img src="/static/img/photo_employee/{{df_dr[df_dr['ФИО'] == item]['Фото']. values [0]}}" alt="" style="border-radius: 50%; height: 40px; width: 40px;"></div> -->
+          </div>
+         </a>
+         {% else %}
+         <a href="{{ url_for('employee', id = df_dr[df_dr['ФИО'] == item]['ID']) }}" style="color: rgb(31, 11, 146);">
+          <div class="row">
+              <div class="col-6"><p style="font-size: 17px;">{{ item }}</p></div>
+              <div class="col-4"><p style="font-size: 17px;">{{df_dr[df_dr['ФИО'] == item]['ДР']. values[0]}}</p></div>
+              <div class="col-2"><img src="/static/img/photo_employee/{{df_dr[df_dr['ФИО'] == item]['Фото']. values [0]}}" alt="" style="border-radius: 50%; height: 35px; width: 35px;"></div>
+          </div>
+         </a>
+         {% endif %}
+      {% endfor %}
+        </div>
+      </div>
+  </div>
+</div>
+<script>
+  document.getElementById('mainpage').style.borderBottom = '2px solid'
+  document.getElementById('mainpage').style.borderColor = 'violet'
+</script>
+<script>
+  function toggleReadMore(btn) {
+    var container = btn.parentNode;
+    var text = container.querySelector('.read-more-text');
+  
+    if (text.style.maxHeight) {
+      text.style.maxHeight = null;
+      btn.textContent = "Читать далее";
+    } else {
+      text.style.maxHeight = text.scrollHeight + "px";
+      btn.textContent = "Скрыть";
+    }
+  }
+  
+  // Проверяем каждый блок с текстом и скрываем кнопку "читать далее", если текст короткий
+  document.querySelectorAll('.read-more-text').forEach(function(text) {
+    if (text.scrollHeight <= 100) { // предполагаем, что 100px — это высота, которая не требует раскрытия
+      text.nextSibling.style.display = 'none';
+    }
+  });
+  </script>
+{% endblock %}
