@@ -1,0 +1,387 @@
+{% extends 'base.html' %}
+
+{% block title%}
+👨🏻‍💻Отчеты по МП👨🏻‍💻
+{% endblock %}
+
+{% block body%}
+
+
+
+
+<div class="container">
+    <h5 style="color: tomato;">Страница для запросов Глеба по реализации МП</h5>
+    <div class="row"> 
+        <h5>Раскидывание файлов по нужным папкам</h5>
+        <hr style="color: black;">
+         <div class="col-sm-12 col-md-8 col-lg-8" style="border: 2px solid; padding: 20px; border-radius: 50px;">
+            <h6>Это блок с сохранением отчетов МП по нужным папкам на сервере. <br> 
+                Файлы ВБ - обязательно <p style="color: green;">эксель</p>
+                Файлы ОЗОН и ЯМ  - <p style="color: red;">PDF</p></h6>
+                <hr>
+                <p>Последний день отчетного периода ВБ</p>
+                <input type="date" id="dateInputWB" onchange="checkDate()">
+            
+            
+            <form id="uploadForm">
+                <p>Отчет ВБ Пятаев</p>
+                <input id="fileInput" type="file" class="fileInput" name="WBPIAT" style="color: green;" accept=".xls,.xlsx" disabled ><br>
+                <input type="text" id="hraneniePI" placeholder="Сумма хранения"> <input type="text" id="reklamaPI" placeholder="Сумма за Рекламу"><input type="text" id="priemkaPI" placeholder="Сумма платной приемки"><input type="text" id="otherPI" placeholder="Транзит"><input type="text" id="otherotherPI" placeholder="ПРОЧИЕ прочие расходы">
+                <hr>
+                <p>Отчет ВБ Колесников</p>
+                <input id="fileInput"  type="file" class="fileInput" name="WBKOL" style="color: green;" accept=".xls,.xlsx"disabled><br>
+                <input type="text" id="hranenieKOL" placeholder="Сумма хранения"> <input type="text" id="reklamaKOL" placeholder="Сумма за Рекламу"><input type="text" id="priemkaKOL" placeholder="Сумма платной приемки"><input type="text" id="otherKOL" placeholder="Транзит"><input type="text" id="otherotherKOL" placeholder="ПРОЧИЕ прочие расходы">
+
+                <p>Отчет ВБ Гизатулин</p>
+                <input  id="fileInput" type="file" class="fileInput" name="WBGIZ" style="color: green;" accept=".xls,.xlsx"disabled><br>
+                <input type="text" id="hranenieGIZ" placeholder="Сумма хранения"> <input type="text" id="reklamaGIZ" placeholder="Сумма за Рекламу"><input type="text" id="priemkaGIZ" placeholder="Сумма платной приемки"><input type="text" id="otherGIZ" placeholder="Транзит"><input type="text" id="otherotherGIZ" placeholder="ПРОЧИЕ прочие расходы">
+
+                <p>Отчет ВБ Уланская</p>
+                <input  id="fileInput" type="file" class="fileInput" name="WBUL" style="color: green;" accept=".xls,.xlsx"disabled><br>
+                <input type="text" id="hranenieUL" placeholder="Сумма хранения"> <input type="text" id="reklamaUL" placeholder="Сумма за Рекламу"><input type="text" id="priemkaUL" placeholder="Сумма платной приемки"><input type="text" id="otherUL" placeholder="Транзит"><input type="text" id="otherotherUL" placeholder="ПРОЧИЕ прочие расходы">
+
+                <p>Отчет ВБ Перевалов</p>
+                <input  id="fileInput" type="file" class="fileInput" name="WBPER" style="color: green;" accept=".xls,.xlsx"disabled><br>
+                <input type="text" id="hraneniePER" placeholder="Сумма хранения"> <input type="text" id="reklamaPER" placeholder="Сумма за Рекламу"><input type="text" id="priemkaPER" placeholder="Сумма платной приемки"><input type="text" id="otherPER" placeholder="Транзит"><input type="text" id="otherotherPER" placeholder="ПРОЧИЕ прочие расходы">
+
+                <p>Отчет ОЗОН Пятаев</p>
+                <p>Последний день отчетного периода OZON</p>
+                <input type="date" id="dateInputOZ" onchange="checkDate()">
+                <input type="file" class="fileInputOZ" name="OZPIAT" style="color: green;" accept=".xls,.xlsx" disabled><br>
+                <p>Отчет ЯНДЕКС Пятаев</p>
+                <p>Последний день отчетного периода YandexMARKET</p>
+                <input type="date" id="dateInputYM" onchange="checkDate()">
+                <input type="file" class="fileInputYM" name="YMPIAT" style="color: green;" accept=".xls,.xlsx" disabled><br>
+                <hr>
+                <input type="button" value="Отправить" onclick="uploadFiles()" class="btn-primary" style="margin: 5px;">
+            </form>
+            <div id="loadingSpinner" style="display: none;">
+                <!-- Пример простого спиннера -->
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Загрузка...</span>
+                </div>
+            </div>
+         </div>
+         <div class="col-sm-12 col-md-3 col-lg-3" style="border: 2px solid; border-radius: 50px; padding: 20px; margin: 5px;">
+            <h6>Необходимо выбрать даты периода за которые требуется составить отчет по МП и необходимо выбрать по какому именно МП</h6>
+            
+            <form>
+                <input type="checkbox" id="option1" name="option1" value="WB">
+                <label for="option1">WildBerris</label><br>
+            
+                <input type="checkbox" id="option2" name="option2" value="OZON">
+                <label for="option2">OZON</label><br>
+            
+                <input type="checkbox" id="option3" name="option3" value="YM">
+                <label for="option3">Yandex Market</label><br>
+            
+                <input type="checkbox" id="option4" name="option4" value="ALL">
+                <label for="option4">Все</label><br>
+            </form>
+            
+            <!-- Второй выпадающий список, изначально скрыт -->
+            <select id="secondSelect" style="display: none;">
+                <option value="cab1">CABINET 1</option>
+            </select>
+            <input type="text" id="whowb12" style="display: none;" value="WBPIAT">
+
+        
+            <label for="endDate">Конечная дата:</label>
+            <input type="date" id="endDate" name="endDate">
+            <button id="reportButton" onclick="uploadFiles2()">кнопка запуска скрипта</button>
+         </div>
+         <div class="row">
+            <div style="border: 1px solid; border-radius: 50px; padding: 20px; margin: 10px;">
+                <p>Выгрузка по стандартным параметрам отчетов МП</p> 
+                <input type="button" value="Отправить" onclick="downloadReports()" class="btn-primary" style="margin: 5px;">
+            </div>
+         </div>
+    <div>
+</div>
+<script>
+    function downloadReports() {
+        // Используйте XMLHttpRequest или fetch для отправки запроса
+        fetch('/DownloadReports')
+        .then(response => response.blob()) // Получаем ответ в виде Blob
+        .then(blob => {
+            // Создаем ссылку для скачивания файла
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            // Указываем имя файла для скачивания (можно изменить)
+            a.download = 'report.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            alert('Ваш файл успешно скачан!'); // Опционально: сообщение об успешной загрузке
+        })
+        .catch(error => console.error('Ошибка при скачивании файла:', error));
+    }
+</script>
+<div id="dataModal" style="display:none;">
+    <div id="logika" style="display: none;">
+        <p>Логика расчетов:</p>
+        <p><h5 style="font-weight: bold;">Реализация =</h5>"Тип документа" = "Продажа" & "Обоснование для оплаты" != "Частичное возмещение по браку" + [Сторно возвратов] - [Сторно продаж]</p>
+        <p><h5 style="font-weight: bold;">Выручка =</h5>        фильтр1 = ("Тип документа"] == "Продажа") & (["Обоснование для оплаты"] != "Частичное возмещение по браку") <br>
+            фильтр2 = (["Тип документа"] == "Возврат") & (["Обоснование для оплаты"] != "Частичное возмещение по браку") <br>
+            Выручка = фильтр1 сумма столбца ['Вайлдберриз реализовал Товар (Пр)'] - фильтр2 сумма столбца ['Вайлдберриз реализовал Товар (Пр)']
+    </p>
+        <p><h5 style="font-weight: bold;">Комиссия =</h5>фильтр 1 = (["Тип документа"] == "Продажа") & (["Обоснование для оплаты"] != "Частичное возмещение по браку") <br>
+            фильтр2 = (["Тип документа"] == "Возврат") & (["Обоснование для оплаты"] != "Частичное возмещение по браку") <br>
+            Комиссия = фильтр1 сумма ['Комиссия']* - фильтр2 сумма столбца ['Комиссия'] + сумма столбца ['Возмещение издержек по перевозке']</p>
+            *Комиссия считается как просто разница между ['Вайлдберриз реализовал Товар (Пр)'] - ['К перечислению Продавцу за реализованный Товар']
+        <p><h5 style="font-weight: bold;">Логистика =</h5> сумма столбца ['Услуги по доставке товара покупателю'] в зависимости от значения столбца Страна считается международная или внутренняя</p>
+        <p><h5 style="font-weight: bold;">Остальное =</h5> То что было внесено руками - делиться на реализацию и разносится в в равных значениях на продажи</p>
+        <button onclick="closeLogika()">Скрыть логику магии</button>
+    </div>
+    <br>
+    <button onclick="openLogika()" style="display: block;" id="ghg">Показать логику магии</button>
+    <br>
+    <div id="dataContainer"></div>
+    <button onclick="closeModal()" class="btn btn-outline-primary">Закрыть</button>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var selectElement = document.getElementById('secondSelect');
+        var inputElement = document.getElementById('whowb12');
+
+        selectElement.addEventListener('change', function () {
+            inputElement.value = selectElement.value;
+        });
+    });
+</script>
+<script>
+    function openLogika() {
+        document.getElementById('ghg').style.display = 'none';
+        document.getElementById('logika').style.display = 'block';
+    }
+    function closeLogika() {
+        document.getElementById('ghg').style.display = 'block';
+        document.getElementById('logika').style.display = 'none';
+    }
+
+    document.getElementById('option1').addEventListener('change', function() {
+        // Показываем второй список, если выбрана Опция 1
+        if (this.value === 'WB') {
+            document.getElementById('secondSelect').style.display = 'block';
+        } else {
+            // Скрываем второй список в остальных случаях
+            document.getElementById('secondSelect').style.display = 'none';
+        }
+    });
+
+
+    
+</script>
+
+<script>
+    document.getElementById('option4').addEventListener('change', function() {
+        if (this.checked) {
+            document.getElementById('option1').checked = false;
+            document.getElementById('option2').checked = false;
+            document.getElementById('option3').checked = false;
+            document.getElementById('secondSelect').style.display = 'none';
+        }
+    });
+
+    function uncheckOption4() {
+        document.getElementById('option4').checked = false;
+    }
+
+    document.getElementById('option1').addEventListener('change', uncheckOption4);
+    document.getElementById('option2').addEventListener('change', uncheckOption4);
+    document.getElementById('option3').addEventListener('change', uncheckOption4);
+</script>
+
+
+
+<script>
+    document.getElementById('startDate').addEventListener('change', function() {
+        var startDate = new Date(this.value);
+        var endDate = new Date(document.getElementById('endDate').value);
+
+        if (startDate > endDate) {
+            document.getElementById('endDate').value = this.value;
+        }
+    });
+
+    document.getElementById('endDate').addEventListener('change', function() {
+        var endDate = new Date(this.value);
+        var startDate = new Date(document.getElementById('startDate').value);
+
+        if (startDate > endDate) {
+            document.getElementById('startDate').value = this.value;
+        }
+    });
+</script>
+    
+
+
+<script>
+    
+    function uploadFiles() {
+        var form = document.getElementById('uploadForm');
+        var loadingSpinner = document.getElementById('loadingSpinner');
+        var fileInputs = form.querySelectorAll('input[type="file"]');
+        var filesData = {};
+        var rashpdyPI = {hranenie : document.getElementById('hraneniePI').value,
+         reklama :document.getElementById('reklamaPI').value,
+        priemka : document.getElementById('priemkaPI').value,
+        other : document.getElementById('otherPI').value};
+        
+        loadingSpinner.style.display = 'block';
+        console.log(rashpdyPI)
+        Promise.all(Array.from(fileInputs).map(input => {
+            if(input.files[0]) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        filesData[input.name] = e.target.result; // Сохраняем файл в виде строки Base64
+                        resolve();
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(input.files[0]);
+                });
+            }
+        })).then(() => {
+            otherotherPI
+            // Отправка данных на сервер
+            fetch('/upload?dataWB='+document.getElementById('dateInputWB').value+'&izderPI='+document.getElementById('hraneniePI').value, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(filesData)
+            })
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('dataContainer').innerHTML = html;
+                document.getElementById('dataModal').style.display = 'block';
+                Array.from(fileInputs).forEach(input => input.value = "");
+                loadingSpinner.style.display = 'none';
+            })
+            .catch((error) => {
+                console.error('Ошибка:', error);
+                alert('Ошибка - повторите');
+                loadingSpinner.style.display = 'none';
+            });
+        });
+    }
+    function closeModal() {
+        document.getElementById('dataModal').style.display = 'none';
+    }
+</script>
+
+<script>
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+        var file = e.target.files[0];
+        var fileName = file.name;
+
+        // Проверяем расширение файла
+        if (fileName.endsWith('.xls') || fileName.endsWith('.xlsx')) {
+            
+            // Здесь ваш код для работы с файлом Excel
+        } else {
+            alert('Выберите файл Excel');
+            // Очищаем инпут, если файл не Excel
+            e.target.value = '';
+        }
+    });
+</script>
+
+
+<script>
+    $(document).ready(function(){
+        $('#dateInputWB').on('input', function() {
+            // Выбираем все инпуты с классом 'fileInput' и меняем их свойство 'disabled'
+            $('.fileInput').prop('disabled', false);
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function(){
+        $('#dateInputOZ').on('input', function() {
+            // Выбираем все инпуты с классом 'fileInput' и меняем их свойство 'disabled'
+            $('.fileInputOZ').prop('disabled', false);
+        });
+    });
+</script>
+<script>
+    $(document).ready(function(){
+        $('#dateInputYM').on('input', function() {
+            // Выбираем все инпуты с классом 'fileInput' и меняем их свойство 'disabled'
+            $('.fileInputYM').prop('disabled', false);
+        });
+    });
+</script>
+
+<script>
+    var WBB = document.getElementById('option1').value
+    var OZZ = document.getElementById('option2').value
+    var YMM = document.getElementById('option3').value
+    var ALL = document.getElementById('option4').value
+    var WBwho = document.getElementById('whowb12').value
+function uploadFiles2() {
+        fetch('/reports'+'?dataEnd='+document.getElementById('endDate').value
+        +'&WHO='+WBB+';'+OZZ+';'+YMM+';'+ALL+'&WB='+WBwho, {
+            method: 'POST',
+        })
+        .then(console.log(WBwho))
+        .then(response => response.text())
+        .then(data => {
+            console.log('Успех:', data);
+        })
+        .catch((error) => {
+            console.error('Ошибка:', error);
+        });
+    };
+</script>
+
+
+<style>
+
+    /* Стили для модального окна */
+    #dataModal {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 80%; /* Ширина модального окна */
+        height: 66%; /* 2/3 высоты страницы */
+        background-color: white;
+        padding: 20px;
+        border: 1px solid #ddd;
+        z-index: 1000;
+        overflow-y: auto; /* Прокрутка по вертикали */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Тень для визуального эффекта */
+        display: none; /* Окно изначально скрыто */
+    }
+
+    /* Стили для контейнера с данными */
+    #dataContainer {
+        max-height: 100%; /* Ограничение по максимальной высоте */
+        overflow-y: auto; /* Прокрутка, если контент больше высоты контейнера */
+    }
+
+
+    /* Ваши текущие стили для таблицы */
+    .myTable {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    .myTable, .myTable th, .myTable td {
+        border: 2px solid black;
+    }
+    .myTable th, .myTable td {
+        padding: 5px;
+        text-align: left;
+    }
+</style>
+<script>
+    document.getElementById('workpage').style.borderBottom = '2px solid'
+    document.getElementById('workpage').style.borderColor = 'violet'
+  </script>
+
+{% endblock %}
