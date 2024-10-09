@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title%}
+👨‍👩‍👧‍👦Наша командау👨‍👩‍👧‍👦
+{% endblock %}
+
+
+{% block body%}
+<div style="margin-right: 5%; margin-left: 5%;">
+  {% for otdel in df_all['Отдел'].unique()%}
+  <h5 style="color: rgb(0, 0, 0); margin: 10px;">{{otdel}}</h5>
+  <div class="row text-center">
+  {% for item in df_all[df_all['Отдел'] == otdel]['ФИО']%}
+      <div class="col-s-12 col-md-4 col-xl-3" style="margin: 5px;">
+        <a href="{{ url_for('employee', id = df_all[df_all['ФИО'] == item]['ID']) }}" style="color: black;" class="btn-outline-primary">
+          <div class="card">
+              <img src="/static/img/photo_employee/{{ df_all[df_all['ФИО'] == item]['Фото']. values [0] }}" alt="" style="width:100%">
+              <hr>
+              <p>{{df_all[df_all['ФИО'] == item]['Должность']. values [0]}}</p> 
+              <h5>{{item}}</h5>
+          </div>
+        </a>
+      </div>
+ 
+  {% endfor %}
+</div>
+<hr>
+  {% endfor %}
+</div>
+ <script>
+
+
+  
+ </script>
+ <style>
+  .card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  width: 300px; /* или другой фиксированный размер */
+  height: 400px; /* или другой фиксированный размер */
+  overflow: hidden;
+  margin: auto;
+  text-align: center;
+  font-family: arial;
+}
+
+.price {
+  color: grey;
+  font-size: 22px;
+}
+.card img {
+  width: 100%; /* растягивать изображение на всю ширину карточки */
+  height: 300px; /* фиксированная высота */
+  object-fit: cover; /* обрезать изображение, сохраняя его пропорции */
+}
+
+.card button {
+  border: none;
+  outline: 0;
+  padding: 12px;
+  color: white;
+  background-color: #503bed;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  font-size: 15px;
+}
+
+.card button:hover {
+  opacity: 0.7;
+}
+ </style>
+
+<script>
+  document.getElementById('sotr').style.borderBottom = '2px solid'
+  document.getElementById('sotr').style.borderColor = 'violet'
+</script>
+{% endblock %}
