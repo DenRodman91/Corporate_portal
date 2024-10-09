@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title%}
+Создание новости
+{% endblock %}
+
+{% block body%}
+<div class="container">
+    <form action="/createnews" method="post" enctype="multipart/form-data">
+        <label for="cat">Категория</label>
+        <input type="text" id="catnews" name="cat" required>
+        <br>
+        <label for="textnews">Текст</label>
+        <textarea id="textnews" name="text" required rows="4" cols="50"></textarea>
+        <br>
+        <label for="fotonews">Фото</label>
+        <input type="file" id="fotonews" name="fotonews" required>
+        <br>
+        <input type="submit" value="Login">
+      </form>    
+</div>
+
+{% endblock %}
