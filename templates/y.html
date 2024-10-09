@@ -1,0 +1,536 @@
+
+{% extends 'base.html' %}
+{% block title%}Рабочая панель{% endblock %}
+
+{% block body%}
+{% if dost[0] > 99 %}
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<div style="margin: 0.5%;">
+  <!-- Навигация вкладок -->
+  <ul class="nav nav-tabs">
+    {% if 101 in dost or 1000 in dost or 104 in dost %}
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#home">Детализации</a>
+    </li>
+    {% endif %}
+    {% if 102 in dost or 1000 in dost %}
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#profile">Роботы</a>
+    </li>
+    {% endif %}
+    {% if 103 in dost or 1000 in dost %}
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#db">Запросы в базы данных</a>
+    </li>
+    {% endif %}
+  </ul>
+
+  <!-- Панели вкладок -->
+  <div class="tab-content">
+    {% if 101 in dost or 1000 in dost or 104 in dost%}
+    <div id="home" class="container tab-pane active">
+        <h5 style="color: tomato;">Страница для запросов Глеба по реализации МП</h5>
+        <div class="row"> 
+            
+            <h5>Раскидывание файлов по нужным папкам</h5>
+            <hr style="color: black;">
+            <div class="col-sm-12 col-md-8 col-lg-8" style="border: 2px solid; padding: 20px; border-radius: 50px;">
+                <h6>Это блок с сохранением отчетов МП по нужным папкам на сервере. <br> 
+                <hr>
+                <p>Последний день отчетного периода ВБ</p>
+                <input type="date" id="dateInputWB" onchange="checkDate()">
+                
+                
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <p>Отчет </p>
+                    <input id="fileInput" type="file" class="fileInput" name="WB1" style="color: green;" accept=".xls,.xlsx" disabled ><br>
+                    <input type="text" id="hraneniePI" placeholder="Сумма хранения"> <input type="text" id="reklamaPI" placeholder="Сумма за Рекламу"><input type="text" id="priemkaPI" placeholder="Сумма платной приемки"><input type="text" id="otherPI" placeholder="Транзит"><input type="text" id="otherotherPI" placeholder="ПРОЧИЕ прочие расходы">
+                    <hr>
+                    <p>Отчет </p>
+                    <input id="fileInput"  type="file" class="fileInput" name="WB2" style="color: green;" accept=".xls,.xlsx"disabled><br>
+                    <input type="text" id="hranenieKOL" placeholder="Сумма хранения"> <input type="text" id="reklamaKOL" placeholder="Сумма за Рекламу"><input type="text" id="priemkaKOL" placeholder="Сумма платной приемки"><input type="text" id="otherKOL" placeholder="Транзит"><input type="text" id="otherotherKOL" placeholder="ПРОЧИЕ прочие расходы">
+    
+
+                    <p>Отчет ОЗОН Пятаев</p>
+                    <p>Последний день отчетного периода OZON</p>
+                    <input type="date" id="dateInputOZ" onchange="checkDate()">
+                    <input type="file" class="fileInputOZ" name="OZ1" style="color: green;" accept=".xls,.xlsx" disabled><br>
+                    <hr>
+                    <input type="button" value="Отправить" onclick="uploadFiles()" class="btn-primary" style="margin: 5px;">
+                </form>
+                <div id="loadingSpinner" style="display: none;">
+                    <!-- Пример простого спиннера -->
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Загрузка...</span>
+                    </div>
+                </div>
+    
+            </div>
+            <div class="col-sm-12 col-md-3 col-lg-3">
+                <div style="border: 1px solid; border-radius: 50px; padding: 20px; margin: 10px;">
+                    <p>Выгрузка по стандартным параметрам отчетов МП</p> 
+                    <input type="button" value="Отправить" onclick="downloadReports()" class="btn-primary" style="margin: 5px;">
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {% endif %}   
+
+
+
+
+
+    {% if 102 in dost or 1000 in dost %}
+    <div id="profile" class="container tab-pane fade">
+      <h4>Роботы</h4>
+      <div class="row">
+        <div class="col col-sm-12 col-md-4 col-lg-3">
+            <div class="card-robot-1">
+                <h6>Робот 4. - обновление 1С(данные на сейчас)</h6>
+                <div style="border-radius: 50px; border: 1px solid;">
+                    
+                    <div style="margin: 10%;">
+                        <div id="loadingIndicatorR4" style="display: none;"></div>
+                        <button style="border-radius: 50px; background-color: rgb(255, 242, 0); color: white;" onclick="robot4()">Запуск</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col col-sm-12 col-md-4 col-lg-3">
+            <div class="card-robot-2">
+                <h6>Робот 2. - скоро отключится</h6>
+                <div style="border-radius: 50px; border: 1px solid;">
+                    
+                    <div style="margin: 10%;">
+                        <div id="loadingIndicatorR2" style="display: none;"></div>
+                        <button style="border-radius: 50px; background-color: rgb(255, 242, 0); color: white;" onclick="robot2()">Запуск</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col col-sm-12 col-md-4 col-lg-3">
+            <div class="card-robot-5">
+                <h6>Робот 5 - ОТЗЫВЫ.</h6>
+                <div style="border-radius: 50px; border: 1px solid;">
+                    
+                    <div style="margin: 10%;">
+                        <div id="loadingIndicatorOT" style="display: none;"></div>
+                        <button style="border-radius: 50px; background-color: rgb(17, 0, 255); color: white;" onclick="robot5()" id="otzivirob">Запуск</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Модальное окно с таймером -->
+        <div id="timerModal" style="display:none; position:fixed; z-index:1; left:0; top:0; width:100%; height:100%; overflow:auto; background-color: rgba(0,0,0,0.4);">
+            <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 50%;">
+            <h2>Пожалуйста, подождите...</h2>
+            <p id="timerText">10:00 минут осталось</p>
+            </div>
+        </div>
+        <!-- Модальное окно с таймером -->
+        <div class="col col-sm-12 col-md-4 col-lg-3">
+            <div class="card-robot-6">
+                <h6>Робот СБОРКА ДАННЫХ.</h6>
+                <div style="border-radius: 50px; border: 1px solid;">
+                    
+                    <div style="margin: 10%;">
+                        <div id="loadingIndicatorSB" style="display: none;"></div>
+                        <button style="border-radius: 50px; background-color: rgb(17, 0, 255); color: white;" onclick="robot6()" id="robot6">Запуск</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col col-sm-12 col-md-4 col-lg-3">
+            <div class="card-robot-7">
+                <h6>Робот ОБНОВИТЬ ВСЕ ТАБЛИЦЫ ГУГЛ-SQL.</h6>
+                <div style="border-radius: 50px; border: 1px solid;">
+                    
+                    <div style="margin: 10%;">
+                        <div id="loadingIndicatorUPD" style="display: none;"></div>
+                        <button style="border-radius: 50px; background-color: rgb(17, 0, 255); color: white;" onclick="robot7()">Запуск</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+<style>
+    #loadingIndicatorOT, #loadingIndicatorR2,#loadingIndicatorR4, #loadingIndicatorSB, #loadingIndicatorUPD {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border-left-color: #09f;
+    animation: spin 1s ease infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+</style>
+    <script>
+        function robot7() {
+    // Находим элемент загрузки и показываем его
+    var loadingIndicator = document.getElementById('loadingIndicatorUPD');
+    loadingIndicator.style.display = 'block';
+
+    // Отправляем данные на сервер
+    fetch('/updatesqlgoogle', {
+        method: 'POST' // Это данные вашей формы
+    })
+    .then(response => response.text())
+    .then(text => {
+        // Скрываем элемент загрузки, когда получен ответ
+        loadingIndicator.style.display = 'none';
+        
+        // Действия после получения ответа, например, показать уведомление
+        alert(text);
+    })
+    .catch((error) => {
+        // Скрываем элемент загрузки, если произошла ошибка
+        loadingIndicator.style.display = 'none';
+        
+        // Обработка ошибки
+        console.error('Error:', error);
+        alert('An error occurred - please try again');
+    });
+}
+function robot6() {
+    // Находим модальное окно и показываем его
+    var timerModal = document.getElementById('timerModal');
+    timerModal.style.display = 'block';
+    var butrob7 = document.getElementById('robot6')
+    butrob7.disabled = true;
+
+    // Инициализируем таймер на 10 минут
+    var timeLeft = 10 * 60; // 10 минут в секундах
+    var timerElem = document.getElementById('timerText');
+    var timerId = setInterval(function() {
+        var minutes = Math.floor(timeLeft / 60);
+        var seconds = timeLeft % 60;
+        timerElem.innerHTML = minutes + ":" + (seconds < 10 ? "0" : "") + seconds + " минут осталось";
+
+        if (timeLeft <= 0) {
+            clearInterval(timerId);
+            timerModal.style.display = "none"; // Скрываем модальное окно
+            butrob7.disabled = false; // Снова включаем кнопку
+        } else {
+            timeLeft--;
+        }
+    }, 1000);
+
+    // Отправляем данные на сервер
+    fetch('/sborka', {
+        method: 'POST'
+    })
+    .then(response => response.text())
+    .then(text => {
+        clearInterval(timerId); // Останавливаем таймер
+        timerModal.style.display = "none"; // Скрываем модальное окно
+        butrob7.disabled = false; // Снова включаем кнопку
+        
+        // Действия после получения ответа, например, показать уведомление
+        alert(text);
+    })
+    .catch((error) => {
+        clearInterval(timerId); // Останавливаем таймер
+        timerModal.style.display = "none"; // Скрываем модальное окно
+        butrob7.disabled = false; // Снова включаем кнопку
+        
+        // Обработка ошибки
+        console.error('Error:', error);
+        alert('An error occurred - please try again');
+    });
+}
+
+function robot5() {
+    // Находим элемент загрузки и показываем его
+    var loadingIndicator = document.getElementById('loadingIndicatorOT');
+    loadingIndicator.style.display = 'block';
+    var otzivirob = document.getElementById('otzivirob');
+    otzivirob.disabled = true;
+    // Отправляем данные на сервер
+    fetch('/otzivi', {
+        method: 'POST' // Это данные вашей формы
+    })
+    .then(response => response.text())
+    .then(text => {
+        // Скрываем элемент загрузки, когда получен ответ
+        loadingIndicator.style.display = 'none';
+        
+        // Действия после получения ответа, например, показать уведомление
+        alert(text);
+    })
+    .catch((error) => {
+        // Скрываем элемент загрузки, если произошла ошибка
+        loadingIndicator.style.display = 'none';
+        
+        // Обработка ошибки
+        console.error('Error:', error);
+        alert('An error occurred - please try again');
+    });
+}
+        function robot4() {
+    // Находим элемент загрузки и показываем его
+    var loadingIndicator = document.getElementById('loadingIndicatorR4');
+    loadingIndicator.style.display = 'block';
+
+    // Отправляем данные на сервер
+    fetch('/robot4', {
+        method: 'POST' // Это данные вашей формы
+    })
+    .then(response => response.text())
+    .then(text => {
+        // Скрываем элемент загрузки, когда получен ответ
+        loadingIndicator.style.display = 'none';
+        
+        // Действия после получения ответа, например, показать уведомление
+        alert(text);
+    })
+    .catch((error) => {
+        // Скрываем элемент загрузки, если произошла ошибка
+        loadingIndicator.style.display = 'none';
+        
+        // Обработка ошибки
+        console.error('Error:', error);
+        alert('An error occurred - please try again');
+    });
+}
+function robot2() {
+    // Находим элемент загрузки и показываем его
+    var loadingIndicator = document.getElementById('loadingIndicatorR2');
+    loadingIndicator.style.display = 'block';
+
+    // Отправляем данные на сервер
+    fetch('/robot2', {
+        method: 'POST' // Это данные вашей формы
+    })
+    .then(response => response.text())
+    .then(text => {
+        // Скрываем элемент загрузки, когда получен ответ
+        loadingIndicator.style.display = 'none';
+        
+        // Действия после получения ответа, например, показать уведомление
+        alert(text);
+    })
+    .catch((error) => {
+        // Скрываем элемент загрузки, если произошла ошибка
+        loadingIndicator.style.display = 'none';
+        
+        // Обработка ошибки
+        console.error('Error:', error);
+        alert('An error occurred - please try again');
+    });
+}
+    </script>
+
+{% endif %}
+
+
+
+
+
+
+
+
+    <div id="db" class="container tab-pane fade">
+      <h4>Запросы в Базы данных</h4>
+    </div>
+
+        
+
+
+     </div>
+</div>
+<script>
+    function downloadReports() {
+        // Используйте XMLHttpRequest или fetch для отправки запроса
+        fetch('/DownloadReports')
+        .then(response => response.blob()) // Получаем ответ в виде Blob
+        .then(blob => {
+            // Создаем ссылку для скачивания файла
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            // Указываем имя файла для скачивания (можно изменить)
+            a.download = 'report.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            alert('Ваш файл успешно скачан!'); // Опционально: сообщение об успешной загрузке
+        })
+        .catch(error => console.error('Ошибка при скачивании файла:', error));
+    }
+</script>
+<div id="dataModal" style="display:none;">
+    <div id="logika" style="display: none;">
+        <p>Логика расчетов:</p>
+        <p><h5 style="font-weight: bold;">Реализация =</h5>"Тип документа" = "Продажа" & "Обоснование для оплаты" != "Частичное возмещение по браку" + [Сторно возвратов] - [Сторно продаж]</p>
+        <p><h5 style="font-weight: bold;">Выручка =</h5>        фильтр1 = ("Тип документа"] == "Продажа") & (["Обоснование для оплаты"] != "Частичное возмещение по браку") <br>
+            фильтр2 = (["Тип документа"] == "Возврат") & (["Обоснование для оплаты"] != "Частичное возмещение по браку") <br>
+            Выручка = фильтр1 сумма столбца ['Вайлдберриз реализовал Товар (Пр)'] - фильтр2 сумма столбца ['Вайлдберриз реализовал Товар (Пр)']
+    </p>
+        <p><h5 style="font-weight: bold;">Комиссия =</h5>фильтр 1 = (["Тип документа"] == "Продажа") & (["Обоснование для оплаты"] != "Частичное возмещение по браку") <br>
+            фильтр2 = (["Тип документа"] == "Возврат") & (["Обоснование для оплаты"] != "Частичное возмещение по браку") <br>
+            Комиссия = фильтр1 сумма ['Комиссия']* - фильтр2 сумма столбца ['Комиссия'] + сумма столбца ['Возмещение издержек по перевозке']</p>
+            *Комиссия считается как просто разница между ['Вайлдберриз реализовал Товар (Пр)'] - ['К перечислению Продавцу за реализованный Товар']
+        <p><h5 style="font-weight: bold;">Логистика =</h5> сумма столбца ['Услуги по доставке товара покупателю'] в зависимости от значения столбца Страна считается международная или внутренняя</p>
+        <p><h5 style="font-weight: bold;">Остальное =</h5> То что было внесено руками - делиться на реализацию и разносится в в равных значениях на продажи</p>
+        <button onclick="closeLogika()">Скрыть логику магии</button>
+    </div>
+    <br>
+    <button onclick="openLogika()" style="display: block;" id="ghg">Показать логику магии</button>
+    <br>
+    <div id="dataContainer"></div>
+    <button onclick="closeModal()" class="btn btn-outline-primary">Закрыть</button>
+</div>
+
+<script>
+    function openLogika() {
+        document.getElementById('ghg').style.display = 'none';
+        document.getElementById('logika').style.display = 'block';
+    }
+    function closeLogika() {
+        document.getElementById('ghg').style.display = 'block';
+        document.getElementById('logika').style.display = 'none';
+    }
+    function closeModal() {
+        document.getElementById('dataModal').style.display = 'none';
+    }
+</script>
+
+
+    
+
+
+<script>
+function uploadFiles() {
+    var form = document.getElementById('uploadForm');
+    var formData = new FormData(form);
+    var loadingSpinner = document.getElementById('loadingSpinner');
+    
+    // Append all text input values to formData
+    formData.append('hraneniePI', document.getElementById('hraneniePI').value);
+    formData.append('reklamaPI', document.getElementById('reklamaPI').value);
+    formData.append('priemkaPI', document.getElementById('priemkaPI').value);
+    formData.append('otherPI', document.getElementById('otherPI').value);
+    formData.append('otherotherPI', document.getElementById('otherotherPI').value);
+    
+    formData.append('hranenieKOL', document.getElementById('hranenieKOL').value);
+    formData.append('reklamaKOL', document.getElementById('reklamaKOL').value);
+    formData.append('priemkaKOL', document.getElementById('priemkaKOL').value);
+    formData.append('otherKOL', document.getElementById('otherKOL').value);
+    formData.append('otherotherKOL', document.getElementById('otherotherKOL').value);
+
+    formData.append('hranenieGIZ', document.getElementById('hranenieGIZ').value);
+    formData.append('reklamaGIZ', document.getElementById('reklamaGIZ').value);
+    formData.append('priemkaGIZ', document.getElementById('priemkaGIZ').value);
+    formData.append('otherGIZ', document.getElementById('otherGIZ').value);
+    formData.append('otherotherGIZ', document.getElementById('otherotherGIZ').value);
+
+    formData.append('hranenieUL', document.getElementById('hranenieUL').value);
+    formData.append('reklamaUL', document.getElementById('reklamaUL').value);
+    formData.append('priemkaUL', document.getElementById('priemkaUL').value);
+    formData.append('otherUL', document.getElementById('otherUL').value);
+    formData.append('otherotherUL', document.getElementById('otherotherUL').value);
+
+    formData.append('hraneniePER', document.getElementById('hraneniePER').value);
+    formData.append('reklamaPER', document.getElementById('reklamaPER').value);
+    formData.append('priemkaPER', document.getElementById('priemkaPER').value);
+    formData.append('otherPER', document.getElementById('otherPER').value);
+    formData.append('otherotherPER', document.getElementById('otherotherPER').value);
+
+    formData.append('dataOZ', document.getElementById('dateInputOZ').value);
+    formData.append('dataYM', document.getElementById('dateInputYM').value);
+
+    loadingSpinner.style.display = 'block';
+
+    // Send formData to the server
+    fetch('/upload', {
+        method: 'POST',
+        body: formData // This is your form data
+    })
+    .then(response => response.text())
+    .then(html => {
+        // Handle the response
+        document.getElementById('dataContainer').innerHTML = html;
+        document.getElementById('dataModal').style.display = 'block';
+        // Reset the form or specific inputs if necessary
+    })
+    .catch((error) => {
+        // Handle the error
+        console.error('Error:', error);
+        alert('An error occurred - please try again');
+    })
+    .finally(() => {
+        loadingSpinner.style.display = 'none';
+    });
+}
+
+</script>
+
+<script>
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+        var file = e.target.files[0];
+        var fileName = file.name;
+
+        // Проверяем расширение файла
+        if (fileName.endsWith('.xls') || fileName.endsWith('.xlsx')) {
+            
+            // Здесь ваш код для работы с файлом Excel
+        } else {
+            alert('Выберите файл Excel');
+            // Очищаем инпут, если файл не Excel
+            e.target.value = '';
+        }
+    });
+</script>
+
+
+<script>
+    $(document).ready(function(){
+        $('#dateInputWB').on('input', function() {
+            // Выбираем все инпуты с классом 'fileInput' и меняем их свойство 'disabled'
+            $('.fileInput').prop('disabled', false);
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function(){
+        $('#dateInputOZ').on('input', function() {
+            // Выбираем все инпуты с классом 'fileInput' и меняем их свойство 'disabled'
+            $('.fileInputOZ').prop('disabled', false);
+        });
+    });
+</script>
+<script>
+    $(document).ready(function(){
+        $('#dateInputYM').on('input', function() {
+            // Выбираем все инпуты с классом 'fileInput' и меняем их свойство 'disabled'
+            $('.fileInputYM').prop('disabled', false);
+        });
+    });
+</script>
+
+
+  
+{% endif %}
+
+
+<script>
+    document.getElementById('workpage').style.borderBottom = '2px solid'
+    document.getElementById('workpage').style.borderColor = 'violet'
+</script>
+
+{% endblock%}
